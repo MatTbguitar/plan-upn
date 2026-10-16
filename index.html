@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Negocios: Repostería Funcional & Fitness Uruapan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f6f8f5',
+                            100: '#e7ede4',
+                            200: '#d0ddcb',
+                            500: '#4a7c59', // Warm Sage Green
+                            600: '#3b6447',
+                            700: '#2d4e37',
+                            800: '#233d2c',
+                        },
+                        warm: {
+                            50: '#fdfbf7', // Neutral Off-white background
+                            100: '#f5f2eb',
+                            200: '#e7e2d5',
+                            800: '#2d3748',
+                            900: '#1a202c',
+                        },
+                        accent: {
+                            500: '#d97706', // Warm Amber/Terracotta
+                            600: '#b45309',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfbf7;
+            color: #1a202c;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #4a7c59;
+            color: #2d4e37;
+            font-weight: 700;
+            background-color: #f5f2eb;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Chosen Palette: Warm Natural Harmony (Background: #FDFBF7, Primary: #4A7C59 / Sage Green, Accent: #D97706 / Amber, Text: #1A202C) -->
+    <!-- Application Structure Plan: Interactive single-page report structured into 6 thematic tabs:
+         1) Visión & Perfil: Operational persona, safety & low-fatigue principles.
+         2) Estrategia Uruapan: Security measures, "a puerta cerrada" model, local market sourcing.
+         3) Equipamiento & CAPEX: Technical comparison (Oster 42L vs Migsa), electrical strategy, itemized investment table.
+         4) Catálogo & Costos: Interactive unit economics (Brownies, Galletas, Manzana Chips) with Chart.js cost breakdown.
+         5) Simulación Financiera: Dynamic calculator with interactive Chart.js bar chart for sales/profit projections.
+         6) Alianzas & Operación: Medical/Nutritional backing, weekly routine for senior operator, Notebook-ready slide export blocks. -->
+    <!-- Visualization & Content Choices:
+         - Equipment Matrix: HTML Responsive Comparison Table.
+         - Cost Structure: Chart.js Donut Chart (Canvas rendering, dynamic label formatting).
+         - Financial Simulator: Interactive JS Sliders connected to Chart.js Bar Chart for real-time ROI recalculation.
+         - Icons/Graphics: Unicode symbols and pure CSS badges (NO SVG, NO Mermaid JS). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-warm-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-brand-500 text-white flex items-center justify-center font-bold text-xl shadow-sm">
+                    🥗
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-warm-900 leading-tight">Repostería Funcional & Fitness</h1>
+                    <p class="text-xs md:text-sm text-gray-500">Plan Empresarial "A Puerta Cerrada" | Uruapan, Michoacán</p>
+                </div>
+            </div>
+            
+            <!-- Quick Metrics Badge Bar -->
+            <div class="flex flex-wrap items-center gap-2 text-xs md:text-sm">
+                <span class="bg-brand-50 text-brand-700 px-3 py-1.5 rounded-full font-medium border border-brand-200">
+                    💰 Inversión Inicial: <strong>$9,530 MXN</strong>
+                </span>
+                <span class="bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full font-medium border border-amber-200">
+                    📈 Margen Bruto: <strong>~60%</strong>
+                </span>
+                <span class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-medium border border-emerald-200">
+                    ⚡ Retorno (ROI): <strong>< 1.5 meses</strong>
+                </span>
+            </div>
+        </div>
+
+        <!-- Tab Navigation Bar -->
+        <nav class="bg-warm-100 border-t border-warm-200 overflow-x-auto custom-scrollbar">
+            <div class="max-w-7xl mx-auto px-4 flex whitespace-nowrap text-sm font-medium text-gray-600">
+                <button onclick="switchTab('tab-vision')" id="btn-tab-vision" class="tab-btn active px-5 py-3 transition-colors flex items-center gap-2">
+                    👤 Visión & Perfil
+                </button>
+                <button onclick="switchTab('tab-uruapan')" id="btn-tab-uruapan" class="tab-btn px-5 py-3 transition-colors flex items-center gap-2">
+                    🛡️ Estrategia Uruapan
+                </button>
+                <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn px-5 py-3 transition-colors flex items-center gap-2">
+                    🔌 Equipamiento & CAPEX
+                </button>
+                <button onclick="switchTab('tab-catalogo')" id="btn-tab-catalogo" class="tab-btn px-5 py-3 transition-colors flex items-center gap-2">
+                    🧁 Catálogo & Costos
+                </button>
+                <button onclick="switchTab('tab-simulador')" id="btn-tab-simulador" class="tab-btn px-5 py-3 transition-colors flex items-center gap-2">
+                    📊 Simulación Financiera
+                </button>
+                <button onclick="switchTab('tab-operacion')" id="btn-tab-operacion" class="tab-btn px-5 py-3 transition-colors flex items-center gap-2">
+                    🩺 Alianzas & Rutina
+                </button>
+                <button onclick="switchTab('tab-notebook')" id="btn-tab-notebook" class="tab-btn px-5 py-3 transition-colors flex items-center gap-2 bg-amber-100 text-amber-800 font-semibold">
+                    📋 Exportar a Notebook
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- TAB 1: VISIÓ N Y PERFIL -->
+        <section id="tab-vision" class="tab-content space-y-6">
+            <!-- Section Intro -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h2 class="text-2xl font-bold text-warm-900 mb-2">Visión del Proyecto y Perfil Operativo</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Este plan de negocio aprovecha una convergencia única: la experiencia administrativa y contable de una emprendedora senior (60+ años), su pasión por el estilo de vida fitness, su sociabilidad y su excelente sazón culinario. El modelo está diseñado a la medida de sus capacidades físicas, protegiendo su salud y patrimonio sin incurrir en estrés financiero.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Profile Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200 flex flex-col justify-between">
+                    <div>
+                        <div class="text-brand-500 text-3xl mb-3">👩‍🍳</div>
+                        <h3 class="text-lg font-bold text-warm-900 mb-2">El Perfil de la Operadora</h3>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-500 font-bold">•</span>
+                                <span><strong>Edad y Movilidad:</strong> 60+ años, con vehículo propio para compras estratégicas.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-500 font-bold">•</span>
+                                <span><strong>Fortalezas:</strong> Ex-contadora (orden, costo de mermas, disciplina de caja), excelente sazón casero.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-brand-500 font-bold">•</span>
+                                <span><strong>Vida Social Active:</strong> Entusiasta del gimnasio, muy carismática y conectada con su comunidad.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 text-xs text-brand-700 bg-brand-50 p-3 rounded-lg">
+                        🎯 <strong>Objetivo:</strong> Generar ingresos suplementarios con un modelo sostenible de 1 sola persona.
+                    </div>
+                </div>
+
+                <!-- Strategic Pillars -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200 flex flex-col justify-between">
+                    <div>
+                        <div class="text-amber-500 text-3xl mb-3">⚙️</div>
+                        <h3 class="text-lg font-bold text-warm-900 mb-2">Principios Operativos Ergonómicos</h3>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span><strong>Cero Amasado Pesado:</strong> Mezclas de un solo tazón (<em>one-bowl</em>) y uso de moldes de silicón.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span><strong>Horno de Sobremesa:</strong> Ubicado a la altura de la cintura/pecho; evita agacharse o cargar bandejas calientes pesadas.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span><strong>Dosificación Ergonómica:</strong> Cucharas porcionadoras tipo helado para evitar el moldeado manual fatigante.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 text-xs text-amber-800 bg-amber-50 p-3 rounded-lg">
+                        💡 <strong>Salud Ocupacional:</strong> Máximo 3 horas continuas de preparación por sesión.
+                    </div>
+                </div>
+
+                <!-- Business Model Summary -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200 flex flex-col justify-between">
+                    <div>
+                        <div class="text-emerald-500 text-3xl mb-3">🛡️</div>
+                        <h3 class="text-lg font-bold text-warm-900 mb-2">Modelo "A Puerta Cerrada"</h3>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span><strong>Sin Local Comercial:</strong> Operación 100% domiciliaria. Cero letreros o marquesinas exteriores.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span><strong>Venta Bajo Preventa:</strong> Pedidos por WhatsApp cerrados con 50% de anticipo previo a hornear.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span><strong>Entregas Consolidadas:</strong> Puntos acordados en su gimnasio habitual durante su rutina diaria.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 text-xs text-emerald-800 bg-emerald-50 p-3 rounded-lg">
+                        🔒 <strong>Seguridad:</strong> Blindaje total contra extorsión y delincuencia local.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ESTRATEGIA URUAPAN -->
+        <section id="tab-uruapan" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h2 class="text-2xl font-bold text-warm-900 mb-2">Análisis de Entorno y Ventaja Competitiva Local</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Uruapan presenta retos particulares: la inseguridad derivada de extorsiones a negocios abiertos al público y la saturación de comida tradicional. Este modelo responde exactamente a ambos desafíos mediante la **invisibilidad comercial externa** y el **abasto directo en la Central de Abastos / Mercado La Charanda**.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Threat Mitigation Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                    <h3 class="text-lg font-bold text-warm-900 mb-4 flex items-center gap-2">
+                        <span class="text-red-500 text-xl">🛡️</span> Mitigación de Riesgos en Uruapan
+                    </h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="p-3 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                            <h4 class="font-bold text-red-900">Riesgo: Cobro de Piso / Extorsión Comercial</h4>
+                            <p class="text-red-700 text-xs mt-1">
+                                <strong>Solución:</strong> Cero visibilidad física. No existe letrero, redes sociales con dirección ni flujo de desconocidos al hogar. Los clientes son parte de su red social de confianza.
+                            </p>
+                        </div>
+
+                        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+                            <h4 class="font-bold text-amber-900">Riesgo: Saturación de Comida y Mermas</h4>
+                            <p class="text-amber-700 text-xs mt-1">
+                                <strong>Solución:</strong> Nicho funcional (keto/proteico) con alta demanda no atendida en gimnasios. Esquema de preventa anticipada que reduce las mermas al 0%.
+                            </p>
+                        </div>
+
+                        <div class="p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                            <h4 class="font-bold text-blue-900">Riesgo: Desgaste Físico en Entregas</h4>
+                            <p class="text-blue-700 text-xs mt-1">
+                                <strong>Solución:</strong> Uso del vehículo únicamente para abasto concentrado 1 vez por semana y entregas consolidadas en el gimnasio al que ya asiste regularmente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Local Sourcing Advantage Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                    <h3 class="text-lg font-bold text-warm-900 mb-4 flex items-center gap-2">
+                        <span class="text-brand-500 text-xl">🛒</span> La Ventaja del Mercado La Charanda / Abastos
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-4">
+                        La cercanía con centros de abasto mayoristas en Uruapan permite reducir los costos de materia prima hasta un 35% en comparación con supermercados:
+                    </p>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between items-center p-2.5 bg-warm-100 rounded-lg">
+                            <span class="font-medium">🥚 Huevo fresco (cono de 30)</span>
+                            <span class="text-brand-700 font-bold">~$85.00 MXN (Ahorro 35%)</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2.5 bg-warm-100 rounded-lg">
+                            <span class="font-medium">🥜 Almendra y Nuez a granel</span>
+                            <span class="text-brand-700 font-bold">~$260.00 MXN / kg</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2.5 bg-warm-100 rounded-lg">
+                            <span class="font-medium">🍎 Fruta regional (Manzana / Fresas)</span>
+                            <span class="text-brand-700 font-bold">~$30.00 MXN / kg</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2.5 bg-warm-100 rounded-lg">
+                            <span class="font-medium">🌿 Canela entera y especias puras</span>
+                            <span class="text-brand-700 font-bold">Mayor aroma a menor costo</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-500 italic">
+                        * Nota: Los insumos de especialidad (harina de almendra extra fina, monk fruit y proteína aislado whey) se piden por costales vía comercio electrónico.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: EQUIPAMIENTO & CAPEX -->
+        <section id="tab-equipos" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h2 class="text-2xl font-bold text-warm-900 mb-2">Selección de Equipamiento y Desglose de Inversión (CAPEX)</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Evaluación de alternativas tecnológicas para la producción de sobremesa. Para el inicio del proyecto con presupuesto optimizado y energía residencial de 110V, se selecciona el **Horno Eléctrico Oster de 42 Litros**, complementado con protección de voltaje especializada.
+                </p>
+            </div>
+
+            <!-- Comparison Table Matrix -->
+            <div class="bg-white rounded-2xl shadow-sm border border-warm-200 overflow-hidden">
+                <div class="p-4 bg-warm-100 border-b border-warm-200 font-bold text-warm-900">
+                    ⚖️ Matriz Comparativa: Oster 42L vs. Migsa Comercial vs. Horno Tradicional
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-warm-50 text-warm-900 text-xs font-bold uppercase border-b border-warm-200">
+                            <tr>
+                                <th class="p-3">Criterio</th>
+                                <th class="p-3 bg-brand-50 text-brand-900">Oster 42L French Door (Selección)</th>
+                                <th class="p-3">Migsa EN-20A (4 Niveles)</th>
+                                <th class="p-3">Horno de Estufa Doméstico</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-warm-200 text-xs md:text-sm">
+                            <tr>
+                                <td class="p-3 font-semibold">Precio Estimado</td>
+                                <td class="p-3 bg-brand-50 font-bold text-brand-700">~$4,200 MXN</td>
+                                <td class="p-3 text-gray-600">~$15,000 - $16,500 MXN</td>
+                                <td class="p-3 text-gray-600">$0 MXN (Existente)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Requerimiento Eléctrico</td>
+                                <td class="p-3 bg-brand-50 font-bold text-brand-700">110V / 120V (Clavija normal)</td>
+                                <td class="p-3 text-red-600 font-semibold">220V Bifásico (Instalación CFE)</td>
+                                <td class="p-3 text-gray-600">Gas LP / Llama abierta</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Capacidad por Tanda</td>
+                                <td class="p-3 bg-brand-50">1 charola útil (12 galletas / 16 brownies)</td>
+                                <td class="p-3 font-bold text-emerald-700">4 charolas (40-50 galletas)</td>
+                                <td class="p-3 text-gray-600">2 charolas (Calor desigual)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Ergonomía Gerontológica</td>
+                                <td class="p-3 bg-brand-50 text-brand-800">
+                                    <strong>Excelente:</strong> Puertas francesas a 1 mano, montaje sobre mesa.
+                                </td>
+                                <td class="p-3">Excelente (Sobremesa pesado)</td>
+                                <td class="p-3 text-red-600">
+                                    <strong>Deficiente:</strong> Agacharse al piso, riesgo de quemaduras.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold">Funciones Especiales</td>
+                                <td class="p-3 bg-brand-50">Convección + Air Fryer (Deshidratado)</td>
+                                <td class="p-3">Convección Industrial con Turbina</td>
+                                <td class="p-3 text-gray-600">Sin circulación de aire</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Surge Protector Note -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl text-xs md:text-sm text-amber-900 flex items-start gap-3">
+                <span class="text-xl">💡</span>
+                <div>
+                    <strong>Estrategia Eléctrica (No-Break vs. Supresor de Picos):</strong>
+                    Un No-Break convencional de $1,500 MXN se apagaría o quemaría inmediatamente con el consumo de 1,800W del horno. La solución técnica correcta es instalar un <strong>Protector de Sobrevoltaje / Supresor de Picos para Línea Blanca ($450 MXN)</strong> con retardo de 3 minutos. Esto protege la tarjeta digital del horno ante apagones y descargas en Uruapan sin gastos excesivos.
+                </div>
+            </div>
+
+            <!-- CAPEX Itemized Breakdown Table -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h3 class="text-lg font-bold text-warm-900 mb-4">Presupuesto de Inversión Inicial Detallado</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-warm-100 text-warm-900 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-3">Categoría</th>
+                                <th class="p-3">Descripción / Insumo</th>
+                                <th class="p-3 text-right">Costo Estimado (MXN)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-warm-200 text-xs md:text-sm">
+                            <tr>
+                                <td class="p-3 font-medium">Equipamiento Central</td>
+                                <td class="p-3 text-gray-600">Horno Oster 42L French Door 110V + Protector de Sobrevoltaje</td>
+                                <td class="p-3 text-right font-bold text-warm-900">$4,650.00</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Utensilios Ergonómicos</td>
+                                <td class="p-3 text-gray-600">Báscula digital, 2 moldes silicón, mandolina con protector, cuchara porcionadora</td>
+                                <td class="p-3 text-right font-bold text-warm-900">$1,300.00</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Empaque e Imagen</td>
+                                <td class="p-3 text-gray-600">Selladora térmica de impulso (20cm), 100 bolsas kraft pouch, 200 stickers vinil</td>
+                                <td class="p-3 text-right font-bold text-warm-900">$1,280.00</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Materia Prima Inicial</td>
+                                <td class="p-3 text-gray-600">Insumos de Mercado ($595) + Insumos de Especialidad Keto/Whey ($1,705)</td>
+                                <td class="p-3 text-right font-bold text-warm-900">$2,300.00</td>
+                            </tr>
+                            <tr class="bg-brand-50 font-bold text-brand-900 text-sm">
+                                <td class="p-3" colspan="2">TOTAL INVERSIÓN INICIAL (CAPEX)</td>
+                                <td class="p-3 text-right text-brand-700 text-base">$9,530.00 MXN</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 text-xs text-gray-500 text-right">
+                    * Queda una reserva de capital disponible de <strong>$10,470 MXN</strong> del límite tope de $20,000 MXN.
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: CATÁLOGO Y COSTOS -->
+        <section id="tab-catalogo" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h2 class="text-2xl font-bold text-warm-900 mb-2">Catálogo Inicial y Análisis de Costos Unitarios (COGS)</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Tres productos insignia de alta rotación, diseñados para optimizar el espacio del horno Oster de 42 Litros sin exigir esfuerzo físico pronunciado. El margen de ganancia bruto se mantiene cercano al **60%**.
+                </p>
+            </div>
+
+            <!-- Product Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Product 1 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-warm-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-3xl">🍫</span>
+                            <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold">Alta Proteína</span>
+                        </div>
+                        <h3 class="font-bold text-warm-900 text-base mb-1">Brownie Proteico de Cacao & Whey</h3>
+                        <p class="text-xs text-gray-500 mb-3">Formulación de un solo tazón. Un molde rectangular rinde 16 porciones exactas.</p>
+                        
+                        <div class="space-y-1.5 text-xs border-t border-b border-gray-100 py-3 mb-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Costo Materia Prima + Empaque:</span>
+                                <span class="font-semibold">$13.80 MXN</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Precio Venta Público (PVP):</span>
+                                <span class="font-bold text-brand-700">$35.00 MXN</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-700 font-bold">
+                                <span>Utilidad Bruta por Pieza:</span>
+                                <span>$21.20 MXN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center bg-brand-50 text-brand-800 text-xs py-2 rounded-lg font-bold">
+                        Margen Bruto: 60.5%
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-warm-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-3xl">🍪</span>
+                            <span class="bg-brand-100 text-brand-800 text-xs px-2.5 py-1 rounded-full font-bold">100% Keto</span>
+                        </div>
+                        <h3 class="font-bold text-warm-900 text-base mb-1">Galletas Keto Almendra & Chispas</h3>
+                        <p class="text-xs text-gray-500 mb-3">Masa porcionada con cuchara de helado. Paquete individual con 2 piezas grandes.</p>
+                        
+                        <div class="space-y-1.5 text-xs border-t border-b border-gray-100 py-3 mb-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Costo Materia Prima + Empaque:</span>
+                                <span class="font-semibold">$16.50 MXN</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Precio Venta Público (PVP):</span>
+                                <span class="font-bold text-brand-700">$40.00 MXN</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-700 font-bold">
+                                <span>Utilidad Bruta por Paquete:</span>
+                                <span>$23.50 MXN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center bg-brand-50 text-brand-800 text-xs py-2 rounded-lg font-bold">
+                        Margen Bruto: 58.7%
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-warm-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-3xl">🍎</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">Deshidratado</span>
+                        </div>
+                        <h3 class="font-bold text-warm-900 text-base mb-1">Chips de Manzana con Canela</h3>
+                        <p class="text-xs text-gray-500 mb-3">Manzana regional cortada en mandolina, espolvoreada con monk fruit y canela.</p>
+                        
+                        <div class="space-y-1.5 text-xs border-t border-b border-gray-100 py-3 mb-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Costo Materia Prima + Empaque:</span>
+                                <span class="font-semibold">$12.00 MXN</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Precio Venta Público (PVP):</span>
+                                <span class="font-bold text-brand-700">$30.00 MXN</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-700 font-bold">
+                                <span>Utilidad Bruta por Bolsa (45g):</span>
+                                <span>$18.00 MXN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center bg-brand-50 text-brand-800 text-xs py-2 rounded-lg font-bold">
+                        Margen Bruto: 60.0%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart.js Cost Structure Chart -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h3 class="text-lg font-bold text-warm-900 mb-2 text-center">Estructura del Precio de Venta Promedio ($35.00 MXN)</h3>
+                <p class="text-xs text-gray-500 text-center mb-4">Distribución porcentual de los costos directos y ganancia en cada unidad vendida</p>
+                <div class="chart-container">
+                    <canvas id="costStructureChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: SIMULACIÓN FINANCIERA -->
+        <section id="tab-simulador" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h2 class="text-2xl font-bold text-warm-900 mb-2">Simulador Financiero y Proyección de Retorno</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Ajusta los controles para calcular las ganancias netas mensuales y el tiempo estimado para recuperar la inversión inicial de **$9,530 MXN** bajo distintas metas de ventas diarias.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Controls Panel -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200 space-y-6 lg:col-span-1">
+                    <h3 class="font-bold text-warm-900 text-base border-b border-gray-100 pb-2">⚙️ Parámetros de Ventas</h3>
+                    
+                    <!-- Slider 1: Units per day -->
+                    <div>
+                        <div class="flex justify-between text-sm font-semibold mb-1">
+                            <span>Unidades Vendidas / Día:</span>
+                            <span id="slider-units-val" class="text-brand-700 font-bold">15 pzas</span>
+                        </div>
+                        <input type="range" id="slider-units" min="5" max="40" step="1" value="15" 
+                               class="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-brand-500"
+                               oninput="updateSimulator()">
+                        <div class="flex justify-between text-xs text-gray-400 mt-1">
+                            <span>5 (Muy bajo)</span>
+                            <span>20 (Moderado)</span>
+                            <span>40 (Alto)</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 2: Average Price -->
+                    <div>
+                        <div class="flex justify-between text-sm font-semibold mb-1">
+                            <span>Precio Promedio / Unidad:</span>
+                            <span id="slider-price-val" class="text-brand-700 font-bold">$35.00 MXN</span>
+                        </div>
+                        <input type="range" id="slider-price" min="25" max="50" step="1" value="35" 
+                               class="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-brand-500"
+                               oninput="updateSimulator()">
+                        <div class="flex justify-between text-xs text-gray-400 mt-1">
+                            <span>$25</span>
+                            <span>$35</span>
+                            <span>$50</span>
+                        </div>
+                    </div>
+
+                    <!-- Calculated Dynamic Metric Cards -->
+                    <div class="p-4 bg-warm-50 rounded-xl space-y-3 border border-warm-200">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-600">Ventas Mensuales (30 días):</span>
+                            <span id="calc-sales-qty" class="font-bold">450 pzas</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-600">Ingreso Bruto Mensual:</span>
+                            <span id="calc-revenue" class="font-bold text-warm-900">$15,750 MXN</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-600">Costo de Insumos (COGS):</span>
+                            <span id="calc-cogs" class="font-bold text-red-600">-$6,300 MXN</span>
+                        </div>
+                        <hr class="border-warm-200">
+                        <div class="flex justify-between items-center text-sm font-bold">
+                            <span class="text-brand-900">Utilidad Neta Mensual:</span>
+                            <span id="calc-profit" class="text-emerald-700 text-base">$9,450 MXN</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs bg-emerald-100 text-emerald-900 p-2 rounded-lg font-semibold">
+                            <span>Tiempo Recuperación CAPEX:</span>
+                            <span id="calc-roi">~1.0 meses</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Chart Visualizer -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200 lg:col-span-2 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-warm-900 text-base mb-2">📊 Proyección de Flujo de Efectivo a 6 Meses</h3>
+                        <p class="text-xs text-gray-500 mb-4">Gráfica en tiempo real comparando la Inversión Inicial Acumulada contra la Utilidad Acumulada.</p>
+                        <div class="chart-container">
+                            <canvas id="financialChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 bg-warm-100 p-3 rounded-lg mt-4">
+                        📌 <strong>Nota de Escenarios:</strong> Con solo vender <strong>10 unidades al día</strong> entre sus compañeros de gimnasio, la utilidad neta mensual supera los <strong>$6,300 MXN</strong>, recuperando la inversión total en menos de 45 días.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: ALIANZAS Y OPERACIÓN -->
+        <section id="tab-operacion" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <h2 class="text-2xl font-bold text-warm-900 mb-2">Alianzas Familiares y Rutina Operativa Semanal</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Integración del respaldo médico/nutricional de la familia para dotar al producto de un sello de confianza único, junto con una rutina estructurada que previene la fatiga física de la operadora.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Medical Allies Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                    <h3 class="text-lg font-bold text-warm-900 mb-4 flex items-center gap-2">
+                        <span class="text-blue-500 text-xl">🩺</span> La Ventaja Médica y Nutricional
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="p-3 bg-blue-50 rounded-xl">
+                            <h4 class="font-bold text-blue-900">1. Cálculo de Tabla Nutrimental Profesional</h4>
+                            <p class="text-xs text-blue-800 mt-1">
+                                La nutrióloga de la familia calcula los gramos exactos de proteína neta, carbohidratos disponibles (descontando fibra y polialcoholes) y grasas saludables por porción.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-xl">
+                            <h4 class="font-bold text-emerald-900">2. Sello de Confianza en Etiqueta</h4>
+                            <p class="text-xs text-emerald-800 mt-1">
+                                Impresión de la leyenda: <em>"Formulado con supervisión médica y nutricional. Apto para control glucémico"</em>. Esto justifica un precio premium.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-purple-50 rounded-xl">
+                            <h4 class="font-bold text-purple-900">3. Canal de Prescripción Directa</h4>
+                            <p class="text-xs text-purple-800 mt-1">
+                                La nutrióloga recomienda el snack a sus pacientes en consulta como colación autorizada, asegurando ventas recurrentes fuera del gimnasio.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Routine Stepper -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                    <h3 class="text-lg font-bold text-warm-900 mb-4 flex items-center gap-2">
+                        <span class="text-brand-500 text-xl">📅</span> Rutina Operativa Semanal (Sin Cansancio)
+                    </h3>
+                    <div class="space-y-3 relative border-l-2 border-brand-200 ml-3 pl-4 text-xs md:text-sm">
+                        <div class="relative">
+                            <span class="absolute -left-[23px] top-0 w-3 h-3 rounded-full bg-brand-500"></span>
+                            <h4 class="font-bold text-warm-900">Lunes (Levantamiento de Pedidos)</h4>
+                            <p class="text-gray-500">Publicación del menú semanal en lista privada de WhatsApp. Confirmación de preventas con 50% de anticipo.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[23px] top-0 w-3 h-3 rounded-full bg-brand-500"></span>
+                            <h4 class="font-bold text-warm-900">Martes (Abasto Corto en Mercado)</h4>
+                            <p class="text-gray-500">Compra de huevo fresco y fruta fresca en Mercado La Charanda aprovechando su traslado diario.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[23px] top-0 w-3 h-3 rounded-full bg-brand-500"></span>
+                            <h4 class="font-bold text-warm-900">Miércoles (Sesión Única de Horneado - 3 hrs)</h4>
+                            <p class="text-gray-500">Horneado continuo en Oster 42L de 9:00 a 12:00 hrs. Empaque y sellado térmico inmediato.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[23px] top-0 w-3 h-3 rounded-full bg-brand-500"></span>
+                            <h4 class="font-bold text-warm-900">Jueves (Entrega en Gimnasio)</h4>
+                            <p class="text-gray-500">Entrega de paquetes pedidos durante su rutina matutina habitual de ejercicio.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[23px] top-0 w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <h4 class="font-bold text-emerald-800">Viernes (Cierre Contable y Descanso)</h4>
+                            <p class="text-gray-500">Cálculo de ganancias de la semana y registro contable simplificado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: EXPORTAR A NOTEBOOK -->
+        <section id="tab-notebook" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-warm-200">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-2xl font-bold text-warm-900">Bloques para Exportación a Google Notebook / Slides</h2>
+                    <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Listos para copiar</span>
+                </div>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Copia y pega directamente estos bloques pre-formateados en Google Notebook para generar automáticamente diapositivas ejecutivas para la familia o aliados comerciales.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                <!-- Slide 1 Block -->
+                <div class="bg-warm-100 p-4 rounded-xl border border-warm-200 relative">
+                    <button onclick="copyToClipboard('slide1')" class="absolute top-3 right-3 bg-white px-2 py-1 rounded border text-[10px] font-sans hover:bg-gray-50">📋 Copiar</button>
+                    <div id="slide1">
+                        <strong class="font-sans text-brand-800 block mb-1">DIAPOSITIVA 1: Visión del Negocio</strong>
+                        * Título: Repostería Funcional Uruapan (Modelo a Puerta Cerrada)<br>
+                        * Problema: Falta de opciones cetogénicas/fit reales en Uruapan y riesgo de extorsión en locales abiertos.<br>
+                        * Solución: Producción artesanal en lotes pequeños, vendida por preventa en gimnasios de confianza.<br>
+                        * Operadora: Adulta mayor (60+ años), ex-contadora, con alta disciplina de costos y buen sazón.
+                    </div>
+                </div>
+
+                <!-- Slide 2 Block -->
+                <div class="bg-warm-100 p-4 rounded-xl border border-warm-200 relative">
+                    <button onclick="copyToClipboard('slide2')" class="absolute top-3 right-3 bg-white px-2 py-1 rounded border text-[10px] font-sans hover:bg-gray-50">📋 Copiar</button>
+                    <div id="slide2">
+                        <strong class="font-sans text-brand-800 block mb-1">DIAPOSITIVA 2: Equipamiento & Inversión</strong>
+                        * Título: Inversión Inicial Eficiente ($9,530 MXN)<br>
+                        * Horno Clave: Oster 42L Convección/Air Fryer 110V ($4,200 MXN) con puertas francesas ergonómicas.<br>
+                        * Protección: Supresor de sobrevoltaje ($450 MXN) contra fallas eléctricas locales.<br>
+                        * Empaque: Selladora de impulso manual ($450 MXN) y bolsas kraft stand-up con ventana.
+                    </div>
+                </div>
+
+                <!-- Slide 3 Block -->
+                <div class="bg-warm-100 p-4 rounded-xl border border-warm-200 relative">
+                    <button onclick="copyToClipboard('slide3')" class="absolute top-3 right-3 bg-white px-2 py-1 rounded border text-[10px] font-sans hover:bg-gray-50">📋 Copiar</button>
+                    <div id="slide3">
+                        <strong class="font-sans text-brand-800 block mb-1">DIAPOSITIVA 3: Productos & Márgenes</strong>
+                        * Título: Catálogo Inicial y Unit Economics<br>
+                        * Brownie Proteico: Costo $13.80 | PVP $35.00 | Margen 60.5%<br>
+                        * Galletas Keto (2 pzas): Costo $16.50 | PVP $40.00 | Margen 58.7%<br>
+                        * Manzana Chips: Costo $12.00 | PVP $30.00 | Margen 60.0%<br>
+                        * Ventaja de Abasto: Compras frescas en Mercado La Charanda / Central de Abastos.
+                    </div>
+                </div>
+
+                <!-- Slide 4 Block -->
+                <div class="bg-warm-100 p-4 rounded-xl border border-warm-200 relative">
+                    <button onclick="copyToClipboard('slide4')" class="absolute top-3 right-3 bg-white px-2 py-1 rounded border text-[10px] font-sans hover:bg-gray-50">📋 Copiar</button>
+                    <div id="slide4">
+                        <strong class="font-sans text-brand-800 block mb-1">DIAPOSITIVA 4: Estrategia Médica y Retorno</strong>
+                        * Título: Aval Profesional y Retorno de Inversión<br>
+                        * Aval Familiar: Nutrióloga calcula macros exactos y médico valida tolerancia glucémica.<br>
+                        * Retorno de Inversión (ROI): Menor a 1.5 meses vendiendo solo 15 unidades al día.<br>
+                        * Utilidad Estimada: ~$9,450 MXN libres al mes con 3 horas semanales de producción.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-warm-200 py-4 mt-8 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4">
+            Plan de Negocios Adaptado para Uruapan, Michoacán • Operación Ergonómica Senior
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Global Variables
+        let costChartInstance = null;
+        let financialChartInstance = null;
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+
+            // Render Charts when tab opens
+            if (tabId === 'tab-catalogo' && !costChartInstance) {
+                initCostChart();
+            }
+            if (tabId === 'tab-simulador') {
+                if (!financialChartInstance) {
+                    initFinancialChart();
+                }
+                updateSimulator();
+            }
+        }
+
+        // Initialize Donut Chart for Cost Structure
+        function initCostChart() {
+            const ctx = document.getElementById('costStructureChart').getContext('2d');
+            costChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Materia Prima (Ingredientes)', 'Empaque & Etiqueta', 'Utilidad Neta (Ganancia)'],
+                    datasets: [{
+                        data: [10.30, 3.50, 21.20],
+                        backgroundColor: ['#d97706', '#94a3b8', '#4a7c59'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let val = context.raw;
+                                    let percentage = ((val / 35.00) * 100).toFixed(1);
+                                    return ` $${val.toFixed(2)} MXN (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Bar Chart for Financial Projections
+        function initFinancialChart() {
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            financialChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6'],
+                    datasets: [
+                        {
+                            label: 'Inversión Acumulada (CAPEX)',
+                            data: [9530, 9530, 9530, 9530, 9530, 9530],
+                            backgroundColor: '#e2e8f0',
+                            borderColor: '#cbd5e1',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Utilidad Neta Acumulada',
+                            data: [9450, 18900, 28350, 37800, 47250, 56700],
+                            backgroundColor: '#4a7c59',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return '$' + value; }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // Live Dynamic Simulator Recalculation
+        function updateSimulator() {
+            const units = parseInt(document.getElementById('slider-units').value);
+            const price = parseFloat(document.getElementById('slider-price').value);
+
+            // Update Labels
+            document.getElementById('slider-units-val').innerText = units + ' pzas';
+            document.getElementById('slider-price-val').innerText = '$' + price.toFixed(2) + ' MXN';
+
+            // Calculations
+            const avgCOGS = 14.00; // Average Cost per Unit (Ingredientes + Empaque)
+            const monthlyQty = units * 30;
+            const monthlyRevenue = monthlyQty * price;
+            const monthlyCOGS = monthlyQty * avgCOGS;
+            const monthlyProfit = monthlyRevenue - monthlyCOGS;
+
+            const capex = 9530;
+            const roiMonths = monthlyProfit > 0 ? (capex / monthlyProfit).toFixed(1) : 'N/A';
+
+            // Update Dynamic Card Text
+            document.getElementById('calc-sales-qty').innerText = monthlyQty + ' pzas';
+            document.getElementById('calc-revenue').innerText = '$' + monthlyRevenue.toLocaleString() + ' MXN';
+            document.getElementById('calc-cogs').innerText = '-$' + monthlyCOGS.toLocaleString() + ' MXN';
+            document.getElementById('calc-profit').innerText = '$' + monthlyProfit.toLocaleString() + ' MXN';
+            document.getElementById('calc-roi').innerText = roiMonths + ' meses';
+
+            // Update Chart Data if initialized
+            if (financialChartInstance) {
+                const accumulatedProfit = [];
+                for (let month = 1; month <= 6; month++) {
+                    accumulatedProfit.push(monthlyProfit * month);
+                }
+                financialChartInstance.data.datasets[1].data = accumulatedProfit;
+                financialChartInstance.update();
+            }
+        }
+
+        // Copy Text Block Helper
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('¡Bloque copiado al portapapeles! Listo para pegar en Google Notebook.');
+            });
+        }
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Default active tab is already visible
+        });
+    </script>
+</body>
+</html>
